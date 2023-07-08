@@ -1,0 +1,10 @@
+Cut by Yetu's Tile Cutter @ 2023年7月8日 22:18:32 
+File Calculate Info:
+    FileName: test_img1.jpg
+    OriginSize: 1080 x 1440
+    TargetSize: 2048 x 2048
+    TileSize: 256
+    AddBlank: True
+    TargetDrawOffset(LeftTop): 484 x 304
+    TargetDrawContentSize: 1080 x 1440
+            

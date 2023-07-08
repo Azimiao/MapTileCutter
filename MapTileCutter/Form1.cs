@@ -24,6 +24,8 @@ namespace MapTileCutter
         /// </summary>
         private static int maxSizeOfBitMap = 23170;
         private static bool tileNumberPowerOf2 = true;
+
+        private static bool addBlankToKeepPixelSize = true;
         public Form1()
         {
             InitializeComponent();
@@ -60,6 +62,7 @@ namespace MapTileCutter
             //}
 
             tileNumberPowerOf2 = checkbox_align.Checked;
+            addBlankToKeepPixelSize = checkBox_addblank.Checked;
 
             if (!int.TryParse(MinZoomTextBox.Text, out MinZoomLevel))
             {
@@ -73,9 +76,9 @@ namespace MapTileCutter
                 return;
             }
 
-            if(TileSize % 2 != 0 || TileSize <= 0)
+            if(TileSize <= 0)
             {
-                MessageBox.Show("Tile size wrong! must > 0 && can devi 2", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Tile size wrong! must > 0", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -95,6 +98,8 @@ namespace MapTileCutter
                 MessageBox.Show("Background color is invalid.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);                
                 return;
             }
+
+
 
             MakeTilesButton.Enabled = false;
 
@@ -167,6 +172,11 @@ namespace MapTileCutter
 
         }
 
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
         private void Tile_TileSaved(object sender, TileSavedEventArgs e)
         {
             CurrentAmountOfTilesGenerated++;
@@ -199,7 +209,7 @@ namespace MapTileCutter
             var realMaxSize = (int)Math.Pow(2,realLevel) * TileSize;
 
             // still have some space
-            if(realMaxSize < maxOriginSize && realMaxSize * 2 < maxSizeOfBitMap)
+            if(addBlankToKeepPixelSize && realMaxSize < maxOriginSize && realMaxSize * 2 < maxSizeOfBitMap)
             {
                 bestLevel = realLevel + 1;
                 realMaxSize *= 2;
@@ -207,8 +217,8 @@ namespace MapTileCutter
 
             var croppedImage = new Bitmap(realMaxSize, realMaxSize);
 
-            int targetWidth = Math.Min(realMaxSize,maxOriginSize);
-            int targetHeight = Math.Min(realMaxSize, maxOriginSize);
+            int targetWidth = addBlankToKeepPixelSize?  Math.Min(realMaxSize,maxOriginSize) : realMaxSize;
+            int targetHeight = addBlankToKeepPixelSize ? Math.Min(realMaxSize, maxOriginSize) : realMaxSize;
             int centerX = 0;
             int centerY = 0;
             
@@ -220,7 +230,7 @@ namespace MapTileCutter
 
                 if (o > 1)
                 {
-                    if (realMaxSize <= maxOriginSize)
+                    if (realMaxSize <= maxOriginSize || !addBlankToKeepPixelSize)
                     {
                         targetHeight = (int)Math.Floor(realMaxSize / o);
                         centerY = (int)((realMaxSize - targetHeight) * 0.5f);
@@ -234,7 +244,7 @@ namespace MapTileCutter
                 }
                 else
                 {
-                    if (realMaxSize <= maxOriginSize)
+                    if (realMaxSize <= maxOriginSize || !addBlankToKeepPixelSize)
                     {
                         targetWidth = (int)Math.Floor(realMaxSize * o);
                         centerX = (int)((realMaxSize - targetWidth) * 0.5f);
@@ -261,6 +271,7 @@ File Calculate Info:
     OriginSize: {originImage.Width} x {originImage.Height}
     TargetSize: {realMaxSize} x {realMaxSize}
     TileSize: {TileSize}
+    AddBlank: {addBlankToKeepPixelSize}
     TargetDrawOffset(LeftTop): {centerX} x {centerY}
     TargetDrawContentSize: {targetWidth} x {targetHeight}
             ";
@@ -282,7 +293,7 @@ File Calculate Info:
             return croppedImage;
         }
 
-        Bitmap CropImage(Image originalImage, Rectangle sourceRectangle, Rectangle destinationRectangle,bool stillNeedOriginalImage = true,bool isFirst = false)
+        Bitmap CropImage(Image originalImage, Rectangle sourceRectangle, Rectangle destinationRectangle,bool stillNeedOriginalImage = true)
         {
             Rectangle _destRectancle = destinationRectangle;
 

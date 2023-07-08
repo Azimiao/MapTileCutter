@@ -42,7 +42,6 @@
             this.panel4 = new System.Windows.Forms.Panel();
             this.MinZoomTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.TileSizeTextBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -56,13 +55,15 @@
             this.ExportPath = new System.Windows.Forms.TextBox();
             this.ProgressLabel = new System.Windows.Forms.Label();
             this.BackgroundColorTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBox_addblank = new System.Windows.Forms.CheckBox();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -122,15 +123,14 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.checkbox_align);
             this.groupBox2.Controls.Add(this.panel5);
             this.groupBox2.Controls.Add(this.panel4);
-            this.groupBox2.Controls.Add(this.panel3);
             this.groupBox2.Controls.Add(this.panel2);
             this.groupBox2.Controls.Add(this.panel1);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.exportPathButton);
             this.groupBox2.Controls.Add(this.ExportPath);
+            this.groupBox2.Controls.Add(this.panel3);
             this.groupBox2.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.groupBox2.Location = new System.Drawing.Point(14, 96);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -147,7 +147,7 @@
             this.checkbox_align.Checked = true;
             this.checkbox_align.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkbox_align.Enabled = false;
-            this.checkbox_align.Location = new System.Drawing.Point(552, 112);
+            this.checkbox_align.Location = new System.Drawing.Point(15, 10);
             this.checkbox_align.Name = "checkbox_align";
             this.checkbox_align.Size = new System.Drawing.Size(170, 23);
             this.checkbox_align.TabIndex = 4;
@@ -183,7 +183,9 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.TileSizeTextBox);
             this.panel4.Controls.Add(this.MinZoomTextBox);
+            this.panel4.Controls.Add(this.label4);
             this.panel4.Controls.Add(this.label6);
             this.panel4.Location = new System.Drawing.Point(6, 98);
             this.panel4.Name = "panel4";
@@ -194,7 +196,7 @@
             // 
             this.MinZoomTextBox.Location = new System.Drawing.Point(86, 11);
             this.MinZoomTextBox.Name = "MinZoomTextBox";
-            this.MinZoomTextBox.Size = new System.Drawing.Size(43, 25);
+            this.MinZoomTextBox.Size = new System.Drawing.Size(37, 25);
             this.MinZoomTextBox.TabIndex = 3;
             this.MinZoomTextBox.Text = "0";
             // 
@@ -207,18 +209,9 @@
             this.label6.TabIndex = 1;
             this.label6.Text = "Min zoom";
             // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.TileSizeTextBox);
-            this.panel3.Controls.Add(this.label4);
-            this.panel3.Location = new System.Drawing.Point(552, 60);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(229, 43);
-            this.panel3.TabIndex = 6;
-            // 
             // TileSizeTextBox
             // 
-            this.TileSizeTextBox.Location = new System.Drawing.Point(65, 8);
+            this.TileSizeTextBox.Location = new System.Drawing.Point(190, 12);
             this.TileSizeTextBox.Name = "TileSizeTextBox";
             this.TileSizeTextBox.Size = new System.Drawing.Size(63, 25);
             this.TileSizeTextBox.TabIndex = 1;
@@ -227,7 +220,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 10);
+            this.label4.Location = new System.Drawing.Point(129, 14);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(55, 19);
             this.label4.TabIndex = 0;
@@ -338,6 +331,28 @@
             this.BackgroundColorTooltip.InitialDelay = 50;
             this.BackgroundColorTooltip.ReshowDelay = 100;
             // 
+            // checkBox_addblank
+            // 
+            this.checkBox_addblank.AutoSize = true;
+            this.checkBox_addblank.Checked = true;
+            this.checkBox_addblank.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_addblank.Location = new System.Drawing.Point(15, 52);
+            this.checkBox_addblank.Name = "checkBox_addblank";
+            this.checkBox_addblank.Size = new System.Drawing.Size(164, 23);
+            this.checkBox_addblank.TabIndex = 10;
+            this.checkBox_addblank.Text = "Don\'t reduce pixel size";
+            this.checkBox_addblank.UseVisualStyleBackColor = true;
+            this.checkBox_addblank.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.checkbox_align);
+            this.panel3.Controls.Add(this.checkBox_addblank);
+            this.panel3.Location = new System.Drawing.Point(549, 60);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(232, 84);
+            this.panel3.TabIndex = 6;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -363,12 +378,12 @@
             this.panel5.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -390,7 +405,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.ComboBox TileFormat;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TextBox TileSizeTextBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Panel panel4;
@@ -403,6 +417,8 @@
         private System.Windows.Forms.ToolTip BackgroundColorTooltip;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkbox_align;
+        private System.Windows.Forms.CheckBox checkBox_addblank;
+        private System.Windows.Forms.Panel panel3;
     }
 }
 
