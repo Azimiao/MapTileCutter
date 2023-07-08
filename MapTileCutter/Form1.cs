@@ -162,6 +162,11 @@ namespace MapTileCutter
             });
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
         private void Tile_TileSaved(object sender, TileSavedEventArgs e)
         {
             CurrentAmountOfTilesGenerated++;
@@ -181,11 +186,11 @@ namespace MapTileCutter
 
         Bitmap GetNewBitmapWithAdaptSize(Image originImage,ref int bestLevel)
         {
-            var maxSize = Math.Max(originImage.Width, originImage.Height);
+            var maxOriginSize = Math.Max(originImage.Width, originImage.Height);
 
             var maxLevel = (int)Math.Floor(Math.Log(maxSizeOfBitMap * 1.0f / TileSize, 2));
 
-            var maxLevel2 = (int)Math.Floor(Math.Log(maxSize * 1.0f / TileSize, 2));
+            var maxLevel2 = (int)Math.Floor(Math.Log(maxOriginSize * 1.0f / TileSize, 2));
 
             var realLevel = Math.Min(maxLevel, maxLevel2);
 
@@ -193,26 +198,61 @@ namespace MapTileCutter
 
             var realMaxSize = (int)Math.Pow(2,realLevel) * TileSize;
 
+            // still have some space
+            if(realMaxSize < maxOriginSize && realMaxSize * 2 < maxSizeOfBitMap)
+            {
+                bestLevel = realLevel + 1;
+                realMaxSize *= 2;
+            }
+
             var croppedImage = new Bitmap(realMaxSize, realMaxSize);
 
-            int targetWidth = realMaxSize;
-            int targetHeight = realMaxSize;
+            int targetWidth = Math.Min(realMaxSize,maxOriginSize);
+            int targetHeight = Math.Min(realMaxSize, maxOriginSize);
             int centerX = 0;
             int centerY = 0;
+            
 
             if(originImage.Width != originImage.Height)
             {
+
                 var o = 1.0f * originImage.Width / originImage.Height;
 
                 if (o > 1)
                 {
-                    targetHeight = (int)Math.Floor(realMaxSize / o);
-                    centerY = (int)((realMaxSize - targetHeight) * 0.5f);
+                    if (realMaxSize <= maxOriginSize)
+                    {
+                        targetHeight = (int)Math.Floor(realMaxSize / o);
+                        centerY = (int)((realMaxSize - targetHeight) * 0.5f);
+                    }
+                    else // can not fill all width,add blank
+                    {
+                        targetHeight = (int)Math.Floor(maxOriginSize / o);
+                        centerX = (int)((realMaxSize - originImage.Width) * 0.5f);
+                        centerY = (int)((realMaxSize - originImage.Height) * 0.5f);
+                    }
                 }
                 else
                 {
-                    targetWidth = (int)Math.Floor(realMaxSize * o);
-                    centerX = (int)((realMaxSize - targetWidth) * 0.5f);
+                    if (realMaxSize <= maxOriginSize)
+                    {
+                        targetWidth = (int)Math.Floor(realMaxSize * o);
+                        centerX = (int)((realMaxSize - targetWidth) * 0.5f);
+                    }
+                    else
+                    {
+                        targetWidth = (int)Math.Floor(maxOriginSize * o);
+                        centerX = (int)((realMaxSize - originImage.Width) * 0.5f);
+                        centerY = (int)((realMaxSize - originImage.Height) * 0.5f);
+                    }
+                }
+            }
+            else
+            {
+                if(realMaxSize > maxOriginSize)
+                {
+                    centerX = (int)((realMaxSize - maxOriginSize) * 0.5f);
+                    centerY = centerX;
                 }
             }
             string saveInfo = $@"Cut by Yetu's Tile Cutter @ {DateTime.Now.ToString("F")} 

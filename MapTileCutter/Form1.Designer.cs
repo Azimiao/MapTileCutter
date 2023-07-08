@@ -35,6 +35,7 @@
             this.MapImagePath = new System.Windows.Forms.TextBox();
             this.MakeTilesButton = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkbox_align = new System.Windows.Forms.CheckBox();
             this.panel5 = new System.Windows.Forms.Panel();
             this.BackgroundColorTextBox = new System.Windows.Forms.TextBox();
             this.BackgroundColorLabel = new System.Windows.Forms.Label();
@@ -55,7 +56,6 @@
             this.ExportPath = new System.Windows.Forms.TextBox();
             this.ProgressLabel = new System.Windows.Forms.Label();
             this.BackgroundColorTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.checkbox_align = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -140,6 +140,19 @@
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Export Options";
+            // 
+            // checkbox_align
+            // 
+            this.checkbox_align.AutoSize = true;
+            this.checkbox_align.Checked = true;
+            this.checkbox_align.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkbox_align.Enabled = false;
+            this.checkbox_align.Location = new System.Drawing.Point(552, 112);
+            this.checkbox_align.Name = "checkbox_align";
+            this.checkbox_align.Size = new System.Drawing.Size(170, 23);
+            this.checkbox_align.TabIndex = 4;
+            this.checkbox_align.Text = "Tile number power of 2";
+            this.checkbox_align.UseVisualStyleBackColor = true;
             // 
             // panel5
             // 
@@ -325,19 +338,6 @@
             this.BackgroundColorTooltip.InitialDelay = 50;
             this.BackgroundColorTooltip.ReshowDelay = 100;
             // 
-            // checkbox_align
-            // 
-            this.checkbox_align.AutoSize = true;
-            this.checkbox_align.Checked = true;
-            this.checkbox_align.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkbox_align.Enabled = false;
-            this.checkbox_align.Location = new System.Drawing.Point(552, 112);
-            this.checkbox_align.Name = "checkbox_align";
-            this.checkbox_align.Size = new System.Drawing.Size(170, 23);
-            this.checkbox_align.TabIndex = 4;
-            this.checkbox_align.Text = "Tile number power of 2";
-            this.checkbox_align.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -354,6 +354,7 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Map Tile Cutter";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
