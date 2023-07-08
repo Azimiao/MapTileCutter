@@ -113,12 +113,6 @@ namespace MapTileCutter
 
             MapImage = GetNewBitmapWithAdaptSize(image,ref MaxZoomLevel);
 
-
-            if(MinZoomLevel > MaxZoomLevel)
-            {
-                MinZoomLevel = MaxZoomLevel;
-            }
-
             SaveFormat = TileFormat.Text;
 
             ExportPathValue = ExportPath.Text;
@@ -173,6 +167,11 @@ namespace MapTileCutter
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
         {
 
         }
@@ -265,17 +264,41 @@ namespace MapTileCutter
                     centerY = centerX;
                 }
             }
-            string saveInfo = $@"Cut by Yetu's Tile Cutter @ {DateTime.Now.ToString("F")} 
-File Calculate Info:
-    FileName: {MapImagePath.Text}
-    OriginSize: {originImage.Width} x {originImage.Height}
-    TargetSize: {realMaxSize} x {realMaxSize}
-    TileSize: {TileSize}
-    AddBlank: {addBlankToKeepPixelSize}
-    TargetDrawOffset(LeftTop): {centerX} x {centerY}
-    TargetDrawContentSize: {targetWidth} x {targetHeight}
-            ";
-            var savePath = Path.Combine(ExportPath.Text, Path.GetFileNameWithoutExtension(MapImagePath.Text)) + "_info.txt";
+
+
+            if (MinZoomLevel > bestLevel)
+            {
+                MinZoomLevel = bestLevel;
+            }
+            string saveInfo = $@"{{
+    ""CreateTime"": ""{DateTime.Now.ToString("u")}"",
+    ""FileName"": ""{Path.GetFileName(MapImagePath.Text)}"",
+    ""OriginSize"": 
+    {{
+        ""Width"":{originImage.Width},
+        ""Height"":{originImage.Height}
+    }},
+    ""TargetSize"": 
+    {{
+        ""Width"":{realMaxSize},
+        ""Height"": {realMaxSize}
+    }},
+    ""TileSize"": {TileSize},
+    ""AddBlank"": {addBlankToKeepPixelSize.ToString().ToLower()},
+    ""TargetDrawOffset"": 
+    {{
+        ""X"":{centerX},
+        ""Y"":{centerY}
+    }},
+    ""TargetDrawContentSize"": 
+    {{
+        ""Width"":{targetWidth},
+        ""Height"": {targetHeight}
+    }},
+    ""MinZoomLevel"":{MinZoomLevel + 1},
+    ""MaxZoomLevel"":{MaxZoomLevel + 1}
+}} ";
+            var savePath = Path.Combine(ExportPath.Text, "info.json");
             Console.WriteLine(savePath);
             File.WriteAllText(savePath,saveInfo);
             Console.WriteLine($"we think size {realMaxSize} is best,and level = {bestLevel},offset:X-{centerX},Y-{centerY}");

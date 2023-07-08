@@ -18,47 +18,41 @@ Origin Author: https://github.com/jeanropke/MapTileCutter
 
 ![Demo](assets/2023-07-08-22-09-14.png)
 
-注意，下图中的青色(#FF00FFFF)为填充色，即 Background color(ARGB)。
+注意，下图 Demo 中的红色(#FF00FFFF)为填充色，即 Background color(ARGB)。真正使用时填写 #00FFFFFF 保持透明即可。
 
 ## 256 切割，不勾选 Don't reduce pixel size：
 
 ###  Level 1
 
-![Level1](assets/test_45_cut/1/0_0.png)
+![Level1](assets/demo_cut/1/0_0.png)
 
 ###  Level 2
 
-![Level2](assets/test_45_cut/2/0_0.png)
-
-![Level2](assets/test_45_cut/2/0_1.png)
-
-![Level2](assets/test_45_cut/2/1_0.png)
-
-![Level2](assets/test_45_cut/2/1_1.png)
+![Level2](assets/demo_cut/2/0_0.png)
+![Level2](assets/demo_cut/2/0_1.png)
+![Level2](assets/demo_cut/2/1_0.png)
+![Level2](assets/demo_cut/2/1_1.png)
 
 ###  其他 Level
 
-见[assets/test_45_cut](./assets/test_45_cut)。
+见[assets/demo_cut](./assets/demo_cut)。
 
 ## 256 切割，勾选 Don't reduce pixel size：
 
 ### Level 1
 
-![Level1](assets/test_45_cut_pixel_one_one/1/0_0.png)
+![Level1](assets/demo_cut_dont_reduce/1/0_0.png)
 
 ### Level 2
 
-![Level1](assets/test_45_cut_pixel_one_one/2/0_0.png)
-
-![Level1](assets/test_45_cut_pixel_one_one/2/0_1.png)
-
-![Level1](assets/test_45_cut_pixel_one_one/2/1_0.png)
-
-![Level1](assets/test_45_cut_pixel_one_one/2/1_1.png)
+![Level1](assets/demo_cut_dont_reduce/2/0_0.png)
+![Level1](assets/demo_cut_dont_reduce/2/0_1.png)
+![Level1](assets/demo_cut_dont_reduce/2/1_0.png)
+![Level1](assets/demo_cut_dont_reduce/2/1_1.png)
 
 ### 其他 Level
 
-见[assets/test_45_cut](./assets/test_45_cut)。
+见[assets/demo_cut_dont_reduce](./assets/demo_cut_dont_reduce)。
 
 ## 切割 Level 计算方法
 

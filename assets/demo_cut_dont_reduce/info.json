@@ -1,0 +1,29 @@
+{
+    "CreateTime": "2023-07-08 23:02:33Z",
+    "FileName": "test_img1.jpg",
+    "OriginSize": 
+    {
+        "Width":1080,
+        "Height":1440
+    },
+    "TargetSize": 
+    {
+        "Width":2048,
+        "Height": 2048
+    },
+    "TileSize": 256,
+    "AddBlank": true,
+    "TargetDrawOffset": 
+    {
+        "X":484,
+        "Y":304
+    },
+    "TargetDrawContentSize": 
+    {
+         
+        "Width":1080,
+        "Height": 1440
+    },
+    "MinZoomLevel":1,
+    "MaxZoomLevel":4
+} 
