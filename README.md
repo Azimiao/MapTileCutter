@@ -18,9 +18,10 @@ Origin Author: https://github.com/jeanropke/MapTileCutter
 
 ![Demo](assets/2023-07-08-22-09-14.png)
 
-注意，下图 Demo 中的红色(#FF00FFFF)为填充色，即 Background color(ARGB)。真正使用时填写 #00FFFFFF 保持透明即可。
+注意，下图 Demo 中的红色(#FF00FFFF)为填充色，即 Background color(ARGB)。
+真正使用时填写 #00FFFFFF 保持透明即可。
 
-## 256 切割，不勾选 Don't reduce pixel size：
+## 256 切割，不勾选 Don't reduce pixel size
 
 ###  Level 1
 
