@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows.Forms;
 namespace MapTileCutter
 {
     public class Tile
@@ -34,32 +34,44 @@ namespace MapTileCutter
             PixelFormat = pixelFormat;
         }
 
-        public void Save()
+        public void Save(int level)
         {
-            using (var tile = Form1.MapImage.Clone(Rectangle, PixelFormat))
+            try
             {
-                if (Name.Contains("/"))
+                //Console.WriteLine($"level-{level},Name{Name},save rect:{Rectangle},now ImageSize:{Form1.MapImage.Size}");
+                using (var tile = Form1.MapImage.Clone(Rectangle, PixelFormat)) // warning: out of memory error when rectangle area not in image area
                 {
-                    //The last value from splitted name always will be the actual file name
-                    //The rest will be the folder path
-                    string[] split = Name.Split('/').Reverse().Skip(1).Reverse().ToArray();
 
-                    string folder = String.Join("/", split);
-                    if (!Directory.Exists(Path.Combine(Form1.ExportPathValue, folder)))
+                    if (Name.Contains("/"))
                     {
-                        Directory.CreateDirectory(Path.Combine(Form1.ExportPathValue, folder));
-                    }                 
+                        //The last value from splitted name always will be the actual file name
+                        //The rest will be the folder path
+                        string[] split = Name.Split('/').Reverse().Skip(1).Reverse().ToArray();
+
+                        string folder = String.Join("/", split);
+                        if (!Directory.Exists(Path.Combine(Form1.ExportPathValue, folder)))
+                        {
+                            Directory.CreateDirectory(Path.Combine(Form1.ExportPathValue, folder));
+                        }
+                    }
+
+                    tile.Save(Path.Combine(Form1.ExportPathValue, Name), Format);
                 }
 
-                tile.Save(Path.Combine(Form1.ExportPathValue, Name), Format);
-            }
+                GC.Collect();
 
-            TileSavedEventArgs args = new TileSavedEventArgs()
+                TileSavedEventArgs args = new TileSavedEventArgs()
+                {
+                    SavedAt = DateTime.Now,
+                    Tile = this
+                };
+                OnTileSaved(args);
+            }
+            catch (Exception ex)
             {
-                SavedAt = DateTime.Now,
-                Tile = this
-            };
-            OnTileSaved(args);
+                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}","Error");
+                Application.Exit();
+            }
         }
     }
 

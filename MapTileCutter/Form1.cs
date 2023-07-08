@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+//using System.Windows.Media.Imaging;
 namespace MapTileCutter
 {
 
@@ -19,7 +19,11 @@ namespace MapTileCutter
 
         private static int TotalOfTilesToGenerate;
         private static int CurrentAmountOfTilesGenerated;
-
+        /// <summary>
+        /// The max width that bitMap can handle(Max 2GB,23170 is the max number in True Colorful Mode)
+        /// </summary>
+        private static int maxSizeOfBitMap = 23170;
+        private static bool tileNumberPowerOf2 = true;
         public Form1()
         {
             InitializeComponent();
@@ -49,11 +53,13 @@ namespace MapTileCutter
 
         private void MakeTilesButton_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(MaxZoomTextBox.Text, out MaxZoomLevel))
-            {
-                MessageBox.Show("Max Zoom is not a integer!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            //if (!int.TryParse(MaxZoomTextBox.Text, out MaxZoomLevel))
+            //{
+            //    MessageBox.Show("Max Zoom is not a integer!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    return;
+            //}
+
+            tileNumberPowerOf2 = checkbox_align.Checked;
 
             if (!int.TryParse(MinZoomTextBox.Text, out MinZoomLevel))
             {
@@ -64,6 +70,12 @@ namespace MapTileCutter
             if (!int.TryParse(TileSizeTextBox.Text, out TileSize))
             {
                 MessageBox.Show("Tile size is not a integer!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if(TileSize % 2 != 0 || TileSize <= 0)
+            {
+                MessageBox.Show("Tile size wrong! must > 0 && can devi 2", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -93,8 +105,14 @@ namespace MapTileCutter
             BackgroundColor = BackgroundColorTextBox.Text;
 
             var image = (Bitmap)Bitmap.FromFile(MapImagePath.Text);
-            MapImage = CropImage(image, new Rectangle(0, 0, image.Width, image.Height), new Rectangle(0, 0, image.Width, image.Height));
-            image.Dispose();
+
+            MapImage = GetNewBitmapWithAdaptSize(image,ref MaxZoomLevel);
+
+
+            if(MinZoomLevel > MaxZoomLevel)
+            {
+                MinZoomLevel = MaxZoomLevel;
+            }
 
             SaveFormat = TileFormat.Text;
 
@@ -116,8 +134,9 @@ namespace MapTileCutter
                 for (int zoomLevel = MaxZoomLevel; zoomLevel <= MaxZoomLevel; zoomLevel--)
                 {
                     if (zoomLevel < MinZoomLevel)
+                    {
                         break;
-
+                    }
                     for (int x = 0; x < Math.Ceiling((double)MapImage.Width / TileSize); x++)
                     {
                         for (int y = 0; y < Math.Ceiling((double)MapImage.Height / TileSize); y++)
@@ -126,23 +145,21 @@ namespace MapTileCutter
                 
                             Tile tile = new Tile(rectangle, PixelFormat.Format32bppArgb)
                             {
-                                Name = $"{StructureFormat.Replace("x", x.ToString()).Replace("y", y.ToString()).Replace("z", zoomLevel.ToString()).Split('.')[0]}.{SaveFormat.ToLower()}",
+                                Name = $"{StructureFormat.Replace("x", x.ToString()).Replace("y", y.ToString()).Replace("z", (zoomLevel + 1).ToString()).Split('.')[0]}.{SaveFormat.ToLower()}",
                                 Format = SaveFormat == "PNG" ? ImageFormat.Png : ImageFormat.Jpeg
                             };
                 
                             tile.TileSaved += Tile_TileSaved;
-                            tile.Save();
+                            tile.Save(zoomLevel);
                         }
                     }
 
-                    MapImage = CropImage(MapImage, new Rectangle(0, 0, MapImage.Width, MapImage.Height), new Rectangle(0, 0, MapImage.Width / 2, MapImage.Height / 2));
+                    MapImage = CropImage(MapImage, new Rectangle(0, 0, MapImage.Width, MapImage.Height), new Rectangle(0, 0, MapImage.Width / 2, MapImage.Height / 2),false);
                 }
                 MakeTilesButton.Invoke(new MethodInvoker(delegate { MakeTilesButton.Enabled = true; }));
                 MapImage.Dispose();
                 GC.Collect();
             });
-            
-
         }
 
         private void Tile_TileSaved(object sender, TileSavedEventArgs e)
@@ -162,15 +179,72 @@ namespace MapTileCutter
             }
         }
 
-        Bitmap CropImage(Image originalImage, Rectangle sourceRectangle, Rectangle destinationRectangle)
+        Bitmap GetNewBitmapWithAdaptSize(Image originImage,ref int bestLevel)
+        {
+            var maxSize = Math.Max(originImage.Width, originImage.Height);
+
+            var maxLevel = (int)Math.Floor(Math.Log(maxSizeOfBitMap * 1.0f / TileSize, 2));
+
+            var maxLevel2 = (int)Math.Floor(Math.Log(maxSize * 1.0f / TileSize, 2));
+
+            var realLevel = Math.Min(maxLevel, maxLevel2);
+
+            bestLevel = realLevel;
+
+            var realMaxSize = (int)Math.Pow(2,realLevel) * TileSize;
+
+            var croppedImage = new Bitmap(realMaxSize, realMaxSize);
+
+            int targetWidth = realMaxSize;
+            int targetHeight = realMaxSize;
+            int centerX = 0;
+            int centerY = 0;
+
+            if(originImage.Width != originImage.Height)
+            {
+                var o = 1.0f * originImage.Width / originImage.Height;
+
+                if (o > 1)
+                {
+                    targetHeight = (int)Math.Floor(realMaxSize / o);
+                    centerY = (int)((realMaxSize - targetHeight) * 0.5f);
+                }
+                else
+                {
+                    targetWidth = (int)Math.Floor(realMaxSize * o);
+                    centerX = (int)((realMaxSize - targetWidth) * 0.5f);
+                }
+            }
+            string saveInfo = $@"Cut by Yetu's Tile Cutter @ {DateTime.Now.ToString("F")} 
+File Calculate Info:
+    FileName: {MapImagePath.Text}
+    OriginSize: {originImage.Width} x {originImage.Height}
+    TargetSize: {realMaxSize} x {realMaxSize}
+    TileSize: {TileSize}
+    TargetDrawOffset(LeftTop): {centerX} x {centerY}
+    TargetDrawContentSize: {targetWidth} x {targetHeight}
+            ";
+            var savePath = Path.Combine(ExportPath.Text, Path.GetFileNameWithoutExtension(MapImagePath.Text)) + "_info.txt";
+            Console.WriteLine(savePath);
+            File.WriteAllText(savePath,saveInfo);
+            Console.WriteLine($"we think size {realMaxSize} is best,and level = {bestLevel},offset:X-{centerX},Y-{centerY}");
+
+            using (var graphics = Graphics.FromImage(croppedImage))
+            {
+                graphics.Clear((Color)ColorConverter.ConvertFromString(BackgroundColor));
+                graphics.DrawImage(originImage, new Rectangle(centerX, centerY, targetWidth, targetHeight), new Rectangle(0,0,originImage.Width,originImage.Height), GraphicsUnit.Pixel);
+                originImage.Dispose();
+                GC.Collect();
+            }
+
+
+
+            return croppedImage;
+        }
+
+        Bitmap CropImage(Image originalImage, Rectangle sourceRectangle, Rectangle destinationRectangle,bool stillNeedOriginalImage = true,bool isFirst = false)
         {
             Rectangle _destRectancle = destinationRectangle;
-            if (destinationRectangle.Width % TileSize != 0)
-                _destRectancle.Width += destinationRectangle.Width % 256;
-
-            if (destinationRectangle.Height % TileSize != 0)
-                _destRectancle.Height += destinationRectangle.Height % 256;
-
 
             var croppedImage = new Bitmap(_destRectancle.Width, _destRectancle.Height);
 
@@ -178,6 +252,12 @@ namespace MapTileCutter
             {
                 graphics.Clear((Color)ColorConverter.ConvertFromString(BackgroundColor));
                 graphics.DrawImage(originalImage, destinationRectangle, sourceRectangle, GraphicsUnit.Pixel);
+            }
+
+            if (!stillNeedOriginalImage)
+            {
+                originalImage.Dispose();
+                GC.Collect();
             }
 
             return croppedImage;
