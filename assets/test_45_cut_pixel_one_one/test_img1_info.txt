@@ -1,6 +1,6 @@
-Cut by Yetu's Tile Cutter @ 2023年7月8日 22:18:32 
+Cut by Yetu's Tile Cutter @ 2023年7月8日 22:36:05 
 File Calculate Info:
-    FileName: test_img1.jpg
+    FileName: C:\Users\azimiao\Downloads\test_img1.jpg
     OriginSize: 1080 x 1440
     TargetSize: 2048 x 2048
     TileSize: 256

@@ -18,7 +18,7 @@ Origin Author: https://github.com/jeanropke/MapTileCutter
 
 ![Demo](assets/2023-07-08-22-09-14.png)
 
-注意，下面的图片均有透明边框，实际尺寸为正方形。
+注意，下图中的青色(#FF00FFFF)为填充色，即 Background color(ARGB)。
 
 ## 256 切割，不勾选 Don't reduce pixel size：
 
